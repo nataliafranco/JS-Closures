@@ -14,11 +14,11 @@ function outer() {
 closure over the name variable. Invoke outer saving the return value into
 another variable called 'inner'. */
 
-// Code Here
+var inner = outer();// Code Here
 
 //Once you do that, invoke inner.
 
-//Code Here
+inner();//Code Here
 
 
 
@@ -46,7 +46,9 @@ function callFriend(name) {
 Create a callJake function that when invoked with '435-555-9248' returns 'Calling Jake at 435-555-9248'
 in your console. */
 
-  //Code Here
+
+var callJake = callFriend('Jake');
+callJake('435-555-9248');  //Code Here
 
 
 
@@ -65,13 +67,19 @@ in your console. */
 properly. */
 
 //Code Here
+function makeCounter () {
+  var num = 1;
+  return function() {
+    console.log(num++);
+  }
+}
 
 //Uncomment this once you make your function
-//   var count = makeCounter();
-//   count(); // 1
-//   count(); // 2
-//   count(); // 3
-//   count(); // 4
+   var count = makeCounter();
+   count(); // 1
+   count(); // 2
+   count(); // 3
+   count(); // 4
 
 
 
@@ -91,26 +99,28 @@ properly. */
 up/down counter. The first function is called inc, this function is responsible
 for incrementing the value once. The second function is called dec, this
 function is responsible for decrementing the value by one. You will need to use
-the module pattern to achieve this. 
-Information on the module pattern available here: 
+the module pattern to achieve this.
+Information on the module pattern available here:
 http://stackoverflow.com/questions/17776940/javascript-module-pattern-with-example?answertab=votes#tab-top
 */
 
 function counterFactory(value) {
 
-  // Code here.
+    // Code here.
 
 
-  return {
+    return {
+      inc: function(){return value += 1;},
+      dec: function(){return value -= 1;},
+    }
   }
-}
 
 
 counter = counterFactory(10);
-// counter.inc() // 11
-// counter.inc() // 12
-// counter.inc() // 13
-// counter.dec() // 12
+counter.inc() // 11
+counter.inc() // 12
+counter.inc() // 13
+counter.dec() // 12
 
 
 
@@ -132,12 +142,14 @@ will return 'You're doing awesome, keep it up firstname lastname.' */
 function motivation(firstname, lastname) {
 
   var welcomeText = 'You\'re doing awesome, keep it up ';
-
+  function message() {
+    return welcomeText + firstname + ' ' + lastname;
+  }
   // code message function here.
 
 
   //Uncommment this to return the value of your invoked message function
-  //return message();
+  return message();
 
 }
 
@@ -175,10 +187,13 @@ var module = (function() {
   // Anything that is being returned is made public and can be invoked from
   // outside our lexical scope
   return {
+    publicMethod: function() {
+      return privateMethod();
+    }
     // Code here.
   };
-
 })();
+module.publicMethod();
 
 
 
@@ -195,12 +210,20 @@ var secondLevelFriends = ["Anne", "Harry", "Quinton"];
 var allUsers = ["Tom", "Dick", "Harry", "Anne", "Quinton", "Katie", "Mary"];
 
 function findPotentialFriends(existingFriends) {
-
+  return function (friend){
+    var result=true;
+    for ( var i = 0; i < existingFriends.length; i++){
+        if(existingFriends[i] === friend){
+          result =false;
+        }
+    }
+    return result;
+  }
 }
 
-var isNotAFriend = findPotentialFriends( friends );
-// isNotAFriend(allUsers[0]); // false
-// isNotAFriend(secondLevelFriends[2]); // true
+var isNotAFriend = findPotentialFriends(friends);
+isNotAFriend(allUsers[0]); // false
+isNotAFriend(secondLevelFriends[2]); // true
 
 
 /******************************************************************************\
@@ -210,8 +233,8 @@ var isNotAFriend = findPotentialFriends( friends );
 method, find all potential second level friends as well as potential friends
 from allUsers. */
 
-var potentialSecondLevelFriends = "?";
-var allPotentialFriends = "?";
+var potentialSecondLevelFriends = secondLevelFriends.filter(isNotAFriend);
+var allPotentialFriends = allUsers.filter(isNotAFriend);
 
 
 /******************************************************************************\
@@ -236,9 +259,11 @@ to 5. What we need to do is console.log(i) so that it logs like so:
 
 function timeOutCounter() {
   for (var i = 0; i <= 5; i++) {
+    (function(n) {
     setTimeout(function() {
-    	console.log(i)
-	}, i * 1000)
+    	console.log(n);
+	  }, n * 1000);
+  })(i);
   }
 }
 timeOutCounter();
